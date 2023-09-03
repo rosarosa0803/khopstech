@@ -1,19 +1,71 @@
 <!DOCTYPE html><html><head><meta charset='utf-8'><meta http-equiv='Access-Control-Allow-Origin' content='*'><meta http-equiv='Access-Control-Allow-Credentials' content='true'><script src='https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js'></script><script src='https://fustyles.github.io/webduino/SpBlocklyJS/GameElements_20190131/gameelements.js'></script><script src='https://fustyles.github.io/webduino/SpBlocklyJS/SpreadsheetSQL_20210403/spreadsheetsql.js'></script><script src='https://fustyles.github.io/webduino/SpBlocklyJS/SpreadsheetSQL_20210403/loader.js'></script></head><body><script>const delay=(seconds)=>{return new Promise((resolve)=>{setTimeout(resolve,seconds*1000);});};const main=async()=>{
-var _E8_A9_A6_E7_AE_97_E8_A1_A8ID, _E5_80_9F_E7_94_A8_E7_99_BB_E8_A8_98_E8_A1_A8, _E8_B3_87_E6_96_99_E6_96_B0_E5_A2_9E, arr, i;
-
-function spreadsheetsql_QueryResponse_query(res) {
-  spreadsheetsql_QueryResponse(res, "query");
-}
-window.spreadsheetsql_QueryResponse_query = spreadsheetsql_QueryResponse_query;
+var _E8_A9_A6_E7_AE_97_E8_A1_A8ID, _E5_80_9F_E7_94_A8_E7_99_BB_E8_A8_98_E8_A1_A8, arr, _E8_B3_87_E6_96_99_E6_96_B0_E5_A2_9E, i;
 
 // 描述此函式...
-function _E6_9F_A5_E8_A9_A2_E5_80_9F_E7_94_A8_E6_B8_85_E5_96_AE() {
-  spreadsheetsql_getDataFinish_query = function() {
-    spreadsheetsql_getDataTable('',350,14,10,120,true);
+function SQL_E6_9F_A5_E8_A9_A2_E5_88_9D_E5_A7_8B_E8_A8_AD_E5_AE_9A() {
+  spreadsheetsql_settings(_E8_A9_A6_E7_AE_97_E8_A1_A8ID,'類別', "class");
+  spreadsheetsql_settings(_E8_A9_A6_E7_AE_97_E8_A1_A8ID,'單位', "unit");
+  spreadsheetsql_settings(_E8_A9_A6_E7_AE_97_E8_A1_A8ID,'數量', "query");
+}
 
+// 描述此函式...
+function _E9_A1_9E_E5_88_A5_E9_81_B8_E5_96_AE_E5_BB_BA_E7_AB_8B() {
+  span_create('class',10,15,16,'選擇類別',999);
+  select_create('class',100,30,80,15,'#ffffff','#000000',12,1,[],'',999,true);
+  async function gameselect_class_onchange (event) {
+    spreadsheetsql_executeSql((['select B where A=\'',select_get('class',"selectedValue"),'\''].join('')), "unit");
   };
-  spreadsheetsql_settings(_E8_A9_A6_E7_AE_97_E8_A1_A8ID,'數量');
+  document.getElementById("gameselect_class").addEventListener("change", gameselect_class_onchange, true);
+  spreadsheetsql_executeSql('select A', "class");
+}
+
+// 描述此函式...
+function _E5_80_9F_E7_94_A8_E6_B8_85_E5_96_AE_E9_A1_AF_E7_A4_BA_E8_A1_A8_E6_A0_BC() {
+  span_create('',10,120,14,'更新中...',999);
+  setTimeout(async function(){
+    span_delete('');
+  },4000);
   spreadsheetsql_executeSql('select A,B,C,D where E=1 order by A,B,D desc label A \'類別\',B \'單位\',C \'借用數量\', D \'時間\'', "query");
+}
+
+// 描述此函式...
+function _E5_96_AE_E4_BD_8D_E9_81_B8_E5_96_AE_E5_BB_BA_E7_AB_8B() {
+  span_create('unit',190,15,16,'選擇單位',999);
+  select_create('unit',100,30,260,15,'#ffffff','#000000',12,1,[],'',999,true);
+  async function gameselect_unit_onchange (event) {
+  };
+  document.getElementById("gameselect_unit").addEventListener("change", gameselect_unit_onchange, true);
+}
+
+// 描述此函式...
+function _E5_80_9F_E7_94_A8_E6_95_B8_E9_87_8F_E5_BB_BA_E7_AB_8B() {
+  span_create('keyword',10,70,16,'輸入借用數量',999);
+  number_create('number',120,70,60,25,12,1000,1,1,1,1,999,true);
+  button_create('add',60,30,300,70,1,null,'新增',12,999,true);
+  async function gamebutton_add_onclick (event) {
+    if ((select_get('class',"selectedValue")) == '' || (select_get('unit',"selectedValue")) == '') {
+      alert('請選擇類別與單位，取消新增！');
+      return ;
+    }
+    if ((number_get('number',"value")) <= 0) {
+      alert('數量需大於0 ，取消新增！');
+      return ;
+    }
+    var windowConfirm = window.confirm(([select_get('class',"selectedValue"),'-',select_get('unit',"selectedValue"),'借 ',number_get('number',"value"),'支。 ','確認新增借用該數量嗎?'].join('')));
+    if (windowConfirm==true) {
+        spreadsheetsql_clearDataTable('');
+      spreadsheet_insert("insertfirst", String(select_get('class',"selectedValue"))+"|"+String(select_get('unit',"selectedValue"))+"|"+String(number_get('number',"value"))+"|"+String("gmt_datetime")+"|"+String('=COUNTIFS(A:A,$A1,B:B,$B1,D:D,">="%26$D1)'), 0, 0, "", _E5_80_9F_E7_94_A8_E7_99_BB_E8_A8_98_E8_A1_A8, '數量', "https://script.google.com/macros/s/AKfycbxA3hhTlntwVTOcqngOC_iJL_zLmRwzcDbMYDs7FD8iinNsY9XZsMkD7AcXTIUbEc33EA/exec");
+      setTimeout(async function(){
+        _E5_80_9F_E7_94_A8_E6_B8_85_E5_96_AE_E9_A1_AF_E7_A4_BA_E8_A1_A8_E6_A0_BC();
+      },4000);
+
+    }
+    else {
+        alert('已取消新增');
+
+    }
+  };
+  document.getElementById("gamebutton_add").addEventListener("click", gamebutton_add_onclick, true);
 }
 
 function spreadsheetsql_QueryResponse_class(res) {
@@ -26,84 +78,49 @@ function spreadsheetsql_QueryResponse_unit(res) {
 }
 window.spreadsheetsql_QueryResponse_unit = spreadsheetsql_QueryResponse_unit;
 
+function spreadsheetsql_QueryResponse_query(res) {
+  spreadsheetsql_QueryResponse(res, "query");
+}
+window.spreadsheetsql_QueryResponse_query = spreadsheetsql_QueryResponse_query;
+
 // 描述此函式...
-function _E4_B8_8B_E6_8B_89_E9_81_B8_E5_96_AE__E9_A1_9E_E5_88_A5_E5_BB_BA_E7_AB_8B() {
-  span_create('class',10,15,16,'選擇類別',999);
-  select_create('class',100,30,80,15,'#ffffff','#000000',12,1,[],'',999,true);
-  spreadsheetsql_settings(_E8_A9_A6_E7_AE_97_E8_A1_A8ID,'類別');
-  spreadsheetsql_executeSql('select A', "class");
-  spreadsheetsql_getDataFinish_class = function() {
+function SQL_E6_9F_A5_E8_A9_A2_E4_BA_8B_E4_BB_B6_E5_BB_BA_E7_AB_8B() {
+  spreadsheetsql_getDataFinish_class = function(head_response, response) {
     var arr = [['', '']];
-    var i_end = (spreadsheetsql_getDataCount("ROWS"));
+    var i_end = (spreadsheetsql_getDataCount("ROWS","class"));
     var i_inc = 1;
     if (1 > i_end) {
       i_inc = -i_inc;
     }
     for (i = 1; i_inc >= 0 ? i <= i_end : i >= i_end; i += i_inc) {
-      if ((spreadsheetsql_getCell(1, i)) != null) {
-        arr.push([spreadsheetsql_getCell(1, i), spreadsheetsql_getCell(1, i)]);
+      if ((spreadsheetsql_getCell(1, i,"class")) != null) {
+        arr.push([spreadsheetsql_getCell(1, i,"class"), spreadsheetsql_getCell(1, i,"class")]);
       }
     }
     select_set('class',"option",arr);
-    _E4_B8_8B_E6_8B_89_E9_81_B8_E5_96_AE__E5_96_AE_E4_BD_8D_E5_BB_BA_E7_AB_8B();
+    _E5_96_AE_E4_BD_8D_E9_81_B8_E5_96_AE_E5_BB_BA_E7_AB_8B();
 
   };
-  async function gameselect_class_onchange (event) {
-    spreadsheetsql_settings(_E8_A9_A6_E7_AE_97_E8_A1_A8ID,'單位');
-    spreadsheetsql_executeSql((['select B where A=\'',select_get('class',"selectedValue"),'\''].join('')), "unit");
-  };
-  document.getElementById("gameselect_class").addEventListener("change", gameselect_class_onchange, true);
-  spreadsheetsql_getDataFinish_unit = function() {
+  spreadsheetsql_getDataFinish_unit = function(head_response, response) {
     var arr = [['', '']];
-    var i_end2 = (spreadsheetsql_getDataCount("ROWS"));
+    var i_end2 = (spreadsheetsql_getDataCount("ROWS","unit"));
     var i_inc2 = 1;
     if (1 > i_end2) {
       i_inc2 = -i_inc2;
     }
     for (i = 1; i_inc2 >= 0 ? i <= i_end2 : i >= i_end2; i += i_inc2) {
-      if ((spreadsheetsql_getCell(1, i)) != null) {
-        arr.push([spreadsheetsql_getCell(1, i), spreadsheetsql_getCell(1, i)]);
+      if ((spreadsheetsql_getCell(1, i,"unit")) != null) {
+        arr.push([spreadsheetsql_getCell(1, i,"unit"), spreadsheetsql_getCell(1, i,"unit")]);
       }
     }
     select_set('unit',"option",arr);
 
   };
-}
+  spreadsheetsql_getDataFinish_query = function(head_response, response) {
+    span_delete('');
+    spreadsheetsql_getDataTable('',350,14,10,120,true,"query");
 
-// 描述此函式...
-function _E4_B8_8B_E6_8B_89_E9_81_B8_E5_96_AE__E5_96_AE_E4_BD_8D_E5_BB_BA_E7_AB_8B() {
-  span_create('unit',190,15,16,'選擇單位',999);
-  select_create('unit',100,30,260,15,'#ffffff','#000000',12,1,[],'',999,true);
-  async function gameselect_unit_onchange (event) {
   };
-  document.getElementById("gameselect_unit").addEventListener("change", gameselect_unit_onchange, true);
-}
-
-// 描述此函式...
-function _E5_80_9F_E7_94_A8_E6_95_B8_E9_87_8F_E5_BB_BA_E7_AB_8B() {
-  span_create('keyword',10,70,16,'輸入借用數量',999);
-  number_create('number',120,70,60,25,12,1000,1,1,1,1,999,true);
-  button_create('add',60,30,210,70,1,null,'新增',12,999,true);
-  async function gamebutton_add_onclick (event) {
-    if ((select_get('class',"selectedValue")) == '' || (select_get('unit',"selectedValue")) == '') {
-      alert('請選擇類別與單位，取消新增！');
-      return ;
-    }
-    var windowConfirm = window.confirm(([select_get('class',"selectedValue"),'-',select_get('unit',"selectedValue"),'借 ',number_get('number',"value"),'支。 ','確認新增借用該數量嗎?'].join('')));
-    if (windowConfirm==true) {
-        spreadsheetsql_clearDataTable('');
-      spreadsheet_insert("insertfirst", String(select_get('class',"selectedValue"))+"|"+String(select_get('unit',"selectedValue"))+"|"+String(number_get('number',"value"))+"|"+String("gmt_datetime")+"|"+String('=COUNTIFS(A:A,$A1,B:B,$B1,D:D,">="%26$D1)'), 0, 0, "", _E5_80_9F_E7_94_A8_E7_99_BB_E8_A8_98_E8_A1_A8, '數量', "https://script.google.com/macros/s/AKfycbxA3hhTlntwVTOcqngOC_iJL_zLmRwzcDbMYDs7FD8iinNsY9XZsMkD7AcXTIUbEc33EA/exec");
-      setTimeout(async function(){
-        _E6_9F_A5_E8_A9_A2_E5_80_9F_E7_94_A8_E6_B8_85_E5_96_AE();
-      },4000);
-
-    }
-    else {
-        alert('已取消新增');
-
-    }
-  };
-  document.getElementById("gamebutton_add").addEventListener("click", gamebutton_add_onclick, true);
 }
 
 
@@ -111,8 +128,9 @@ head_add_viewport(0.9,0.5,2,"yes");
 _E8_A9_A6_E7_AE_97_E8_A1_A8ID = '1pocddU9xM3HKsBIaPuLxc9av0exofcO51SqvS2bf9nA';
 _E5_80_9F_E7_94_A8_E7_99_BB_E8_A8_98_E8_A1_A8 = ['https://docs.google.com/spreadsheets/d/',_E8_A9_A6_E7_AE_97_E8_A1_A8ID,'/edit?usp=sharing'].join('');
 _E8_B3_87_E6_96_99_E6_96_B0_E5_A2_9E = [];
-_E4_B8_8B_E6_8B_89_E9_81_B8_E5_96_AE__E9_A1_9E_E5_88_A5_E5_BB_BA_E7_AB_8B();
+SQL_E6_9F_A5_E8_A9_A2_E5_88_9D_E5_A7_8B_E8_A8_AD_E5_AE_9A();
+SQL_E6_9F_A5_E8_A9_A2_E4_BA_8B_E4_BB_B6_E5_BB_BA_E7_AB_8B();
+_E9_A1_9E_E5_88_A5_E9_81_B8_E5_96_AE_E5_BB_BA_E7_AB_8B();
 _E5_80_9F_E7_94_A8_E6_95_B8_E9_87_8F_E5_BB_BA_E7_AB_8B();
-await delay(1);
-_E6_9F_A5_E8_A9_A2_E5_80_9F_E7_94_A8_E6_B8_85_E5_96_AE();
+_E5_80_9F_E7_94_A8_E6_B8_85_E5_96_AE_E9_A1_AF_E7_A4_BA_E8_A1_A8_E6_A0_BC();
 };main();</script></body></html>
